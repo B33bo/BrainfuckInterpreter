@@ -8,7 +8,7 @@ namespace Brainfuck
 {
     public static class BrainFuckInterpreter
     {
-        public static int Delay = 0;
+        public static int Delay;
         private static byte[] cells = new byte[10];
         private static int Pointer;
 
@@ -24,17 +24,17 @@ namespace Brainfuck
                 {
                     default:
                         break;
-                    case '+':
+                    case '+': // The plus operator increases the current cell by one
                         cells[Pointer]++;
                         break;
-                    case '-':
+                    case '-': // The subtract operator decreases the current cell by one
                         cells[Pointer]--;
                         break;
-                    case '.':
+                    case '.': // The dot symbol prints the current cell to the screen
                         Text += Convert.ToChar(cells[Pointer]);
                         break;
-                    case ',':
-                        string Userinput = Console.ReadLine();
+                    case ',': // The comma symbol reads the first letter of the user input
+                        string Userinput = Console.ReadKey().KeyChar.ToString();
 
                         if (Userinput.Length == 0)
                             break;
@@ -42,16 +42,16 @@ namespace Brainfuck
 
                         Console.Clear();
                         break;
-                    case '>':
+                    case '>': // The greater than symbol moves the pointer right by one cell
                         Pointer++;
                         break;
-                    case '<':
+                    case '<': // The less than symbol moves the pointer left by one cell
                         Pointer--;
                         break;
-                    case '[':
+                    case '[': // The square brackets run everything inside the brackets until the current cell is 0
                         i += HandleLoop(i, Code);
                         break;
-                    case ']':
+                    case ']': // The close square bracket defines the end of a loop
                         break;
                 }
 
@@ -88,23 +88,24 @@ namespace Brainfuck
         private static int HandleLoop(int index, string code)
         {
             int indentLevel = 0;
-            string codeToExecute = "";
+            string codeInsideLoop = "";
 
             for (int i = index + 1; i < code.Length; i++)
             {
                 if (code[i] == '[')
                     indentLevel++;
+
                 else if (code[i] == ']')
                 {
                     if (indentLevel == 0)
                     {
-                        RunUntilZero(codeToExecute);
-                        return codeToExecute.Length;
+                        RunUntilZero(codeInsideLoop);
+                        return codeInsideLoop.Length;
                     }
                     indentLevel--;
                 }
 
-                codeToExecute += code[i];
+                codeInsideLoop += code[i];
             }
 
             return -1;
@@ -124,7 +125,7 @@ namespace Brainfuck
             return newArray;
         }
 
-        public static void PrintCells()
+        private static void PrintCells()
         {
             Console.WriteLine("\n");
             for (int i = 0; i < cells.Length; i++)
