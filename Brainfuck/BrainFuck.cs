@@ -10,6 +10,7 @@ namespace Brainfuck
     {
         public static int Delay;
         private static byte[] cells = new byte[10];
+        private static byte Storage { get => cells[0]; set => cells[0] = value; }
         private static int Pointer;
 
         public static void Execute(string Code)
@@ -52,6 +53,33 @@ namespace Brainfuck
                         i += HandleLoop(i, Code);
                         break;
                     case ']': // The close square bracket defines the end of a loop
+                        break;
+                    case '$':
+                        Storage = cells[Pointer];
+                        break;
+                    case '!':
+                        cells[Pointer] = Storage;
+                        break;
+                    case '}':
+                        cells[Pointer] = (byte)(cells[Pointer] << 1);
+                        break;
+                    case '{':
+                        cells[Pointer] = (byte)(cells[Pointer] >> 1);
+                        break;
+                    case '~':
+                        cells[Pointer] = (byte)~Pointer;
+                        break;
+                    case '^':
+                        cells[Pointer] = (byte)(cells[Pointer] ^ Storage);
+                        break;
+                    case '&':
+                        cells[Pointer] = (byte)(cells[Pointer] & Storage);
+                        break;
+                    case '|':
+                        cells[Pointer] = (byte)(cells[Pointer] | Storage);
+                        break;
+                    case '?':
+                        Pointer = cells[Pointer];
                         break;
                 }
 
@@ -113,7 +141,7 @@ namespace Brainfuck
 
         private static T[] Add<T>(this T[] array, T item)
         {
-            T[] newArray = new T[array.Length+1];
+            T[] newArray = new T[array.Length + 1];
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -136,6 +164,10 @@ namespace Brainfuck
                 Console.Write($"[{cells[i]}]");
                 Console.ResetColor();
             }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($" [{Storage}]");
+            Console.ResetColor();
         }
     }
 }

@@ -7,9 +7,20 @@ namespace Brainfuck
     {
         static void Main(string[] args)
         {
+            if (args.Length != 0)
+            {
+                if (args.Length >= 2)
+                    if (int.TryParse(args[1], out int delay))
+                        BrainFuckInterpreter.Delay = delay;
+
+                BrainFuckInterpreter.Execute(args[0]);
+                return;
+            }
+
             Console.WriteLine("Enter brainfuck::");
             
             string userinput = Console.ReadLine();
+
             if (userinput.ToLower().StartsWith("delay="))
             {
                 //When the user enters a delay, you have to ask for the brainfuck again
@@ -25,6 +36,8 @@ namespace Brainfuck
 
             Console.Clear();
             BrainFuckInterpreter.Execute(userinput);
+
+            Console.ReadLine();
         }
     }
 }
